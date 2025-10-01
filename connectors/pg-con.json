@@ -1,0 +1,27 @@
+{
+  "name": "pg-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name": "pgoutput",
+    "topic.prefix": "data.cdc",
+
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "debezium",
+    "database.password": "dbz",
+    "database.dbname" : "testdb",
+    "database.server.name": "pg-dev",
+
+    "table.include.list": "kafka.test_cdc",
+
+    "heartbeat.interval.ms": "5000",
+    "slot.name": "testdb_debezium",
+    "publication.name": "testdb_publication",
+    "topic.replication.factor": 3,
+
+    "transforms": "AddPrefix",
+    "transforms.AddPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.AddPrefix.regex": "pg-dev.kafka.(.*)",
+    "transforms.AddPrefix.replacement": "data.cdc.$1b"
+  }
+}
