@@ -6,9 +6,9 @@
     "topic.prefix": "data.cdc",
 
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": true,
+    "key.converter.schemas.enable": "false",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": true,
+    "value.converter.schemas.enable": "false",
 
     "database.hostname": "postgres",
     "database.port": "5432",
@@ -23,20 +23,11 @@
     "slot.name": "testdb_debezium",
     "publication.name": "testdb_publication",
     "topic.replication.factor": 3,
-    
-    "transforms": "unwrap,rename,prefix",
-    
-
-    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
-    "transforms.unwrap.drop.tombstones": "true",
-    "transforms.unwrap.delete.handling.mode": "drop",
-    "transforms.unwrap.add.fields": "op,ts_ms,source.db,source.table,source.schema,source.txId,source.lsn,source.connector,snapshot",
-    "transforms.unwrap.add.fields.prefix": "",
-
-    "transforms.rename.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
-    "transforms.rename.renames": "source_db:db_name,source_table:table_name,source_schema:schema_name,source_connector:connector_name,source_lsn:lsn,source_txId:tx_id",
+    "auto.create": "false",
+    "auto.evolve": "false",
 
 
+    "transforms": "prefix",
 
     "transforms.prefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
     "transforms.prefix.regex": "pg-dev.kafka.(.*)",
