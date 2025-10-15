@@ -5,6 +5,11 @@
     "plugin.name": "pgoutput",
     "topic.prefix": "data.cdc",
 
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": true,
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": true,
+
     "database.hostname": "postgres",
     "database.port": "5432",
     "database.user": "debezium",
@@ -18,10 +23,25 @@
     "slot.name": "testdb_debezium",
     "publication.name": "testdb_publication",
     "topic.replication.factor": 3,
+    
+    "transforms": "unwrap,rename,prefix",
+    
 
-    "transforms": "AddPrefix",
-    "transforms.AddPrefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
-    "transforms.AddPrefix.regex": "pg-dev.kafka.(.*)",
-    "transforms.AddPrefix.replacement": "data.cdc.$1b"
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.drop.tombstones": "true",
+    "transforms.unwrap.delete.handling.mode": "drop",
+    "transforms.unwrap.add.fields": "op,ts_ms,source.db,source.table,source.schema,source.txId,source.lsn,source.connector,snapshot",
+    "transforms.unwrap.add.fields.prefix": "",
+
+    "transforms.rename.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.rename.renames": "source_db:db_name,source_table:table_name,source_schema:schema_name,source_connector:connector_name,source_lsn:lsn,source_txId:tx_id",
+
+
+
+    "transforms.prefix.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.prefix.regex": "pg-dev.kafka.(.*)",
+    "transforms.prefix.replacement": "data.cdc.$1",
+    
+    "snapshot.mode": "initial"
   }
 }
